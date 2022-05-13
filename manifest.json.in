@@ -1,0 +1,15 @@
+{
+    "name": "memecreator.yeyeto2788",
+    "description": "Create you meme easily",
+    "architecture": "@CLICK_ARCH@",
+    "title": "Meme creator",
+    "hooks": {
+        "memecreator": {
+            "apparmor": "memecreator.apparmor",
+            "desktop":  "memecreator.desktop"
+        }
+    },
+    "version": "@BUILD_VERSION@",
+    "maintainer": "Juan Biondi <juanernestobiondi@gmail.com>",
+    "framework" : "@CLICK_FRAMEWORK@"
+}

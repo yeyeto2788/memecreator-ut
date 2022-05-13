@@ -1,0 +1,14 @@
+{
+    "policy_groups": ["camera", "document_files", "picture_files"],
+    "read_path": [
+        "/opt/click.ubuntu.com/memecreator.yeyeto2788", 
+        "/usr/local/lib/python3.5/dist-packages/",
+        "/home/",
+        ],
+    "write_path": [
+        "/opt/click.ubuntu.com/memecreator.yeyeto2788", 
+        "/usr/local/lib/python3.5/dist-packages/",
+        "/home/",
+        ],
+    "policy_version": 16.04
+}

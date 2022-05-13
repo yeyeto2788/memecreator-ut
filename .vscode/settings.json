@@ -1,0 +1,20 @@
+{
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "friends_keeper",
+      "database": "${workspaceFolder:friends_keeper}/friends_keeper.db"
+    }
+  ],
+  "sqltools.useNodeRuntime": true,
+  "spellright.language": [],
+  "spellright.documentTypes": ["latex", "plaintext"],
+  "python.formatting.provider": "black",
+  "python.terminal.activateEnvironment": true,
+  "python.testing.cwd": "${workspaceFolder}",
+  "python.testing.pytestArgs": ["--no-cov"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "python.testing.autoTestDiscoverOnSaveEnabled": true
+}
