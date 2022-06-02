@@ -24,29 +24,33 @@ lib_path = os.path.join(
 sys.path.append(lib_path)
 
 from datetime import datetime
-from PIL import Image, ImageFont, ImageDraw
+
+# from PIL import Image, ImageFont, ImageDraw
+import utils_config
 
 
 def execute(text):
     print(text)
-    return create_meme(infile="", text="UT MEME")
-    # return text
+    # return create_meme(infile="", text="UT MEME")
+    config_file = os.path.join(lib_path, "config.json")
+    config = utils_config.load_config(config_file)
+    return "{text}{config}".format(text=text, config=config)
 
 
-def create_meme(infile, text):
-    # timestamp = datetime.now().timestamp()
-    i = os.path.join(lib_path, "test.png")
-    font_file = os.path.join(lib_path, "PublicSans-VariableFont_wght.ttf")
+# def create_meme(infile, text):
+#     timestamp = datetime.now().timestamp()
+#     i = os.path.join(lib_path, "test.png")
+#     font_file = os.path.join(lib_path, "PublicSans-VariableFont_wght.ttf")
 
-    with Image.open(i) as im:
-        # with Image.open(infile) as im:
-        draw = ImageDraw.Draw(im)
-        # use a bitmap font
-        font = ImageFont.truetype(font_file, 15)
-        draw.text((10, 10), text.title(), font=font)
-        # use a truetype font
-        draw.text((10, 25), text.title(), font=font)
+#     with Image.open(i) as im:
+#         # with Image.open(infile) as im:
+#         draw = ImageDraw.Draw(im)
+#         # use a bitmap font
+#         font = ImageFont.truetype(font_file, 15)
+#         draw.text((10, 10), text.title(), font=font)
+#         # use a truetype font
+#         draw.text((10, 25), text.title(), font=font)
 
-        # write to stdout
-        im.save("result.png", "PNG")
-    return font_file
+#         # write to stdout
+#         im.save("result.png", "PNG")
+#     return font_file

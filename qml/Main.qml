@@ -21,6 +21,7 @@ import Ubuntu.Components.Popups 1.3
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import io.thp.pyotherside 1.3
+import Ubuntu.Content 1.3
 
 // import FileMngt 1.0
 
@@ -34,9 +35,9 @@ MainView {
     height: units.gu(75)
 
     property string myImportedImgFolder: ""
-    property int currentImg: 1
-    property string myImageUrl: myImportedImgFolder + "/UserImportedImg" + currentImg + ".jpg"
-
+    property string myImageUrl: "test.png"
+    Component.onCompleted: mainPageStack.push(mainPage)
+    
     Component {
         id: aboutDialog
         AboutDialog {}
@@ -47,9 +48,16 @@ MainView {
         SystemImages {}
     }
 
+    PageStack{
+        id: mainPageStack
+        anchors.fill: parent
+
+    }
 
     Page {
+        id: mainPage
         anchors.fill: parent
+        visible: false
 
         header: PageHeader {
             id: header
@@ -82,7 +90,7 @@ MainView {
         }
 
         Label {
-            width: parent.width - iconLoadImg.width - units.gu(4)
+            width: parent.width - units.gu(4)
             wrapMode: Text.Wrap
             text: {
                 if (myImportedImgFolder == "")
@@ -102,7 +110,18 @@ MainView {
                 rightMargin: units.gu(2)
             }
             text: i18n.tr('Choose image')
-            onClicked: PopupUtils.open(imageSelector)
+            onClicked: {
+                var importPage = mainPageStack.push(Qt.resolvedUrl("SystemImages.qml"),{"contentType": ContentType.Pictures, "handler": ContentHandler.Source})
+                importPage.imported.connect(function(fileUrl) {
+                    // Resource optimizations for low-end devices
+                    mainPageStack.pop()
+                    myImageUrl = fileUrl
+                    //mainPageStack.push(mainPage)
+                })
+                
+            }
+                        
+
         }
 
         TextField {
@@ -118,15 +137,18 @@ MainView {
 
         Image {
             id: myimage
-            anchors.top: topgrid.bottom
-            width: parent.width
-            height: parent.height - header.height - topgrid.height - units.gu(2)
-            fillMode: Image.PreserveAspectCrop
+            anchors{
+                top: imageCreate.bottom
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            fillMode: Image.PreserveAspectFit
             source: {
-                if (myImportedImgFolder == "")
+                if (myImageUrl == "")
                     return ("")
                 else
-                    return ("file://" + myImageUrl)
+                    return (myImageUrl)
             }
         }
 
@@ -140,7 +162,11 @@ MainView {
                 rightMargin: units.gu(2)
             }
             text: i18n.tr('Save image')
-            onClicked: console.log(text + i18n.tr(' button clicked' + textFieldInput.text))
+            onClicked: {
+                python.call('main.execute', ['Hello World!'], function(returnValue) {
+                    console.log('main.execute returned ' + returnValue);
+                })
+            }
         }
     }
 
@@ -156,6 +182,8 @@ MainView {
                     console.log('main.execute returned ' + returnValue);
                 })
             });
+
+            
         }
 
         onError: {

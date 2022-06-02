@@ -1,39 +1,62 @@
-import QtQuick 2.7
+import QtQuick 2.4
 import Ubuntu.Components 1.3
-import Ubuntu.Components.Popups 1.3
-import Qt.labs.folderlistmodel 2.1
+import Ubuntu.Content 1.3
 
-Dialog {
-    id: dialog
-    title: i18n.tr("System Images")
 
-    Label {
-		width: parent.width
-		wrapMode: Text.WordWrap
-        text: i18n.tr("Select image")
+
+Page {
+    id: picker
+	property var activeTransfer
+
+	property var url
+	property var handler
+	property var contentType
+	
+    signal cancel()
+    signal imported(string fileUrl)
+
+    header: PageHeader {
+        title: i18n.tr("Choose")
     }
 
-    ListView {
-        width: parent.width
-        height: units.gu(50)
-        FolderListModel {
-            id: folderModel
-            nameFilters: ["*.png", "*.jpg"]
-            rootFolder: "/home/phablet/Pictures"
-            showDirs: true
-            showDotAndDotDot: true
-            showFiles: true
+    ContentPeerPicker {
+        anchors { fill: parent; topMargin: picker.header.height }
+        visible: parent.visible
+        showTitle: false
+        contentType: picker.contentType //ContentType.Pictures
+        handler: picker.handler //ContentHandler.Source
+
+        onPeerSelected: {
+            peer.selectionType = ContentTransfer.Single
+            picker.activeTransfer = peer.request()
+            picker.activeTransfer.stateChanged.connect(function() {
+				if (picker.activeTransfer.state === ContentTransfer.InProgress) {
+					console.log("In progress");
+					picker.activeTransfer.items = picker.activeTransfer.items[0].url = url;
+					picker.activeTransfer.state = ContentTransfer.Charged;
+				}
+                if (picker.activeTransfer.state === ContentTransfer.Charged) {
+					console.log("Charged");
+                    picker.imported(picker.activeTransfer.items[0].url)
+					console.log(picker.activeTransfer.items[0].url)
+                    picker.activeTransfer = null
+                }
+            })
         }
-        Component {
-            id: fileDelegate
-            Text { text: fileName }
+       
+
+        onCancelPressed: {
+            pageStack.pop()
         }
-        model: folderModel
-        delegate: fileDelegate
     }
 
-    Button {
-        text: i18n.tr("Close")
-        onClicked: PopupUtils.close(dialog)
+    ContentTransferHint {
+        id: transferHint
+        anchors.fill: parent
+        activeTransfer: picker.activeTransfer
     }
+    Component {
+        id: resultComponent
+        ContentItem {}
+	}
 }
